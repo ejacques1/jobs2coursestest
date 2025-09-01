@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs2Course - Comment Moderation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background: #f9fafb;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+        
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .filters {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .filter-group label {
+            font-size: 0.875rem;
+            color: #374151;
+        }
+        
+        .filter-group select {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .refresh-btn {
+            background: #3b82f6;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            margin-left: auto;
+        }
+        
+        .refresh-btn:hover {
+            background: #2563eb;
+        }
+        
+        .comments-container {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .comment-card {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1.5rem;
+        }
+        
+        .comment-card:last-child {
+            border-bottom: none;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            gap: 1rem;
+        }
+        
+        .comment-meta {
+            flex-grow: 1;
+        }
+        
+        .comment-author {
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.25rem;
+        }
+        
+        .comment-details {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        
+        .comment-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            border: none;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .approve-btn {
+            background: #10b981;
+            color: white;
+        }
+        
+        .approve-btn:hover {
+            background: #059669;
+        }
+        
+        .reject-btn {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .reject-btn:hover {
+            background: #dc2626;
+        }
+        
+        .action-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .comment-text {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            border-left: 3px solid #3b82f6;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-top: 1rem;
+        }
+        
+        .no-comments {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 2px solid #e5e7eb;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .success-message {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .refresh-btn {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+            
+            .comment-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .comment-actions {
+                align-self: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Comment Moderation</h1>
+            <p>Review and approve user comments for Jobs2Course efficiency strategies</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="pending-count">-</div>
+                <div class="stat-label">Pending Comments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="approved-count">-</div>
+                <div class="stat-label">Approved Comments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-count">-</div>
+                <div class="stat-label">Total Comments</div>
+            </div>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-group">
+                <label for="status-filter">Status:</label>
+                <select id="status-filter">
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="all">All</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="category-filter">Category:</label>
+                <select id="category-filter">
+                    <option value="all">All Categories</option>
+                </select>
+            </div>
+            <button class="refresh-btn" onclick="loadComments()">
+                <span class="spinner" id="refresh-spinner" style="display: none;"></span>
+                Refresh
+            </button>
+        </div>
+        
+        <div id="messages"></div>
+        
+        <div class="comments-container">
+            <div id="comments-list">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading comments...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Configuration - use the same config as your main app
+        const APP_CONFIG = {
+            supabase: {
+                url: 'https://hrgxcgdpyoeurxbpcatn.supabase.co',
+                anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZ3hjZ2RweW9ldXJ4YnBjYXRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzOTE4MDMsImV4cCI6MjA3MTk2NzgwM30.KY-1WEDpxfLwKFMS0fisRNZuJvMc50Ikn_P5qdOxGp0'
+            }
+        };
+
+        // Initialize Supabase
+        let supabase = null;
+        let currentUser = null;
+
+        try {
+            supabase = window.supabase.createClient(APP_CONFIG.supabase.url, APP_CONFIG.supabase.anonKey);
+        } catch (error) {
+            console.error('Failed to initialize Supabase:', error);
+            showMessage('Failed to connect to database', 'error');
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', async function() {
+            await checkAuth();
+            await loadStats();
+            await loadComments();
+            await loadCategories();
+            
+            // Set up event listeners
+            document.getElementById('status-filter').addEventListener('change', loadComments);
+            document.getElementById('category-filter').addEventListener('change', loadComments);
+        });
+
+        async function checkAuth() {
+            if (!supabase) return;
+            
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) {
+                    // Redirect to sign in
+                    window.location.href = 'index.html';
+                    return;
+                }
+                
+                currentUser = session.user;
+                console.log('Admin user:', currentUser.email);
+                
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                window.location.href = 'index.html';
+            }
+        }
+
+        async function loadStats() {
+            if (!supabase) return;
+            
+            try {
+                // Get pending count
+                const { count: pendingCount } = await supabase
+                    .from('comments')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('approved', false);
+
+                // Get approved count
+                const { count: approvedCount } = await supabase
+                    .from('comments')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('approved', true);
+
+                // Get total count
+                const { count: totalCount } = await supabase
+                    .from('comments')
+                    .select('*', { count: 'exact', head: true });
+
+                document.getElementById('pending-count').textContent = pendingCount || 0;
+                document.getElementById('approved-count').textContent = approvedCount || 0;
+                document.getElementById('total-count').textContent = totalCount || 0;
+
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function loadCategories() {
+            if (!supabase) return;
+            
+            try {
+                const { data: categories } = await supabase
+                    .from('comments')
+                    .select('job_category')
+                    .not('job_category', 'is', null);
+
+                const uniqueCategories = [...new Set(categories.map(c => c.job_category))];
+                const categoryFilter = document.getElementById('category-filter');
+                
+                uniqueCategories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category;
+                    option.textContent = category;
+                    categoryFilter.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        async function loadComments() {
+            if (!supabase) return;
+            
+            const spinner = document.getElementById('refresh-spinner');
+            const commentsList = document.getElementById('comments-list');
+            
+            spinner.style.display = 'inline-block';
+            commentsList.innerHTML = '<div class="loading"><div class="spinner"></div>Loading comments...</div>';
+            
+            try {
+                const statusFilter = document.getElementById('status-filter').value;
+                const categoryFilter = document.getElementById('category-filter').value;
+                
+                let query = supabase
+                    .from('comments')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                // Apply status filter
+                if (statusFilter === 'pending') {
+                    query = query.eq('approved', false);
+                } else if (statusFilter === 'approved') {
+                    query = query.eq('approved', true);
+                }
+
+                // Apply category filter
+                if (categoryFilter !== 'all') {
+                    query = query.eq('job_category', categoryFilter);
+                }
+
+                const { data: comments, error } = await query;
+
+                if (error) throw error;
+
+                if (comments.length === 0) {
+                    commentsList.innerHTML = '<div class="no-comments">No comments found</div>';
+                } else {
+                    commentsList.innerHTML = comments.map(comment => `
+                        <div class="comment-card" id="comment-${comment.id}">
+                            <div class="comment-header">
+                                <div class="comment-meta">
+                                    <div class="comment-author">${escapeHtml(comment.user_email)}</div>
+                                    <div class="comment-details">
+                                        ${comment.job_category} • ${comment.industry || 'N/A'} • ${formatDate(comment.created_at)}
+                                        ${comment.approved ? '<span style="color: #10b981;">✓ Approved</span>' : '<span style="color: #ef4444;">⏳ Pending</span>'}
+                                    </div>
+                                </div>
+                                ${!comment.approved ? `
+                                    <div class="comment-actions">
+                                        <button class="action-btn approve-btn" onclick="approveComment('${comment.id}')">
+                                            Approve
+                                        </button>
+                                        <button class="action-btn reject-btn" onclick="rejectComment('${comment.id}')">
+                                            Reject
+                                        </button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="comment-text">${escapeHtml(comment.comment_text)}</div>
+                        </div>
+                    `).join('');
+                }
+
+                await loadStats(); // Refresh stats
+
+            } catch (error) {
+                console.error('Error loading comments:', error);
+                commentsList.innerHTML = '<div class="error-message">Failed to load comments</div>';
+            } finally {
+                spinner.style.display = 'none';
+            }
+        }
+
+        async function approveComment(commentId) {
+            if (!supabase) return;
+            
+            try {
+                const { error } = await supabase
+                    .from('comments')
+                    .update({ approved: true, updated_at: new Date().toISOString() })
+                    .eq('id', commentId);
+
+                if (error) throw error;
+
+                showMessage('Comment approved successfully', 'success');
+                await loadComments();
+
+            } catch (error) {
+                console.error('Error approving comment:', error);
+                showMessage('Failed to approve comment', 'error');
+            }
+        }
+
+        async function rejectComment(commentId) {
+            if (!supabase) return;
+            
+            if (!confirm('Are you sure you want to delete this comment? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const { error } = await supabase
+                    .from('comments')
+                    .delete()
+                    .eq('id', commentId);
+
+                if (error) throw error;
+
+                showMessage('Comment rejected and deleted', 'success');
+                await loadComments();
+
+            } catch (error) {
+                console.error('Error rejecting comment:', error);
+                showMessage('Failed to reject comment', 'error');
+            }
+        }
+
+        function showMessage(message, type) {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = `<div class="${type}-message">${message}</div>`;
+            
+            setTimeout(() => {
+                messagesDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        function formatDate(dateString) {
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleString();
+            } catch (error) {
+                return 'Invalid date';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
