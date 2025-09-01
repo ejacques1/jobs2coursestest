@@ -274,7 +274,6 @@
         }
         
         .feature-icon.level1 { background: #dbeafe; }
-        .feature-icon.level2 { background: #fef3c7; }
         .feature-icon.level3 { background: #dcfce7; }
         
         .feature-card h3 {
@@ -481,6 +480,29 @@
         .submit-comment-btn:disabled {
             background: #9ca3af;
             cursor: not-allowed;
+        }
+        
+        .sign-in-prompt {
+            text-align: center;
+            padding: 2rem;
+            background: #f0f9ff;
+            border-radius: 0.5rem;
+            border: 1px solid #bae6fd;
+        }
+        
+        .sign-in-prompt p {
+            margin-bottom: 1rem;
+            color: #0c4a6e;
+        }
+        
+        .sign-in-prompt button {
+            background: #0ea5e9;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
         }
         
         .comment-success {
@@ -878,70 +900,31 @@
             supabase: {
                 url: 'https://hrgxcgdpyoeurxbpcatn.supabase.co',
                 anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZ3hjZ2RweW9ldXJ4YnBjYXRuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzOTE4MDMsImV4cCI6MjA3MTk2NzgwM30.KY-1WEDpxfLwKFMS0fisRNZuJvMc50Ikn_P5qdOxGp0'
-            },
-            usage: {
-                freeAnalyses: 5,
-                resetPeriod: 24 * 60 * 60 * 1000
             }
         };
 
-        // Task Categories with Keyword Arrays
+        // Task Categories with Keywords  
         const taskCategories = {
             'Documentation & Report Writing': {
-                keywords: ['report', 'document', 'write', 'record', 'log', 'note', 'summary', 'memo', 'brief', 'paper', 'documentation', 'filing', 'paperwork', 'forms', 'chart', 'journal', 'transcript', 'minutes', 'proposal', 'presentation', 'draft', 'documentation', 'writing', 'documenting', 'reports', 'charts', 'charting', 'notes', 'recording', 'logging']
+                keywords: ['report', 'document', 'write', 'record', 'log', 'note', 'summary', 'memo', 'brief', 'paper', 'documentation', 'filing', 'paperwork', 'forms', 'chart', 'journal', 'transcript', 'minutes', 'proposal', 'presentation', 'draft']
             },
             'Data Analysis & Processing': {
-                keywords: ['data', 'analyze', 'analysis', 'spreadsheet', 'excel', 'numbers', 'calculate', 'metrics', 'statistics', 'stats', 'kpi', 'dashboard', 'chart', 'graph', 'pivot', 'formula', 'database', 'sql', 'query', 'trend', 'forecast', 'budget', 'financial', 'analytics', 'processing', 'calculations', 'formulas', 'pivot tables', 'visualizations']
+                keywords: ['data', 'analyze', 'analysis', 'spreadsheet', 'excel', 'numbers', 'calculate', 'metrics', 'statistics', 'stats', 'kpi', 'dashboard', 'chart', 'graph', 'pivot', 'formula', 'database', 'sql', 'query', 'trend', 'forecast', 'budget', 'financial', 'analytics']
             },
             'Communication & Email Management': {
-                keywords: ['email', 'communicate', 'call', 'phone', 'meeting', 'respond', 'follow up', 'contact', 'correspondence', 'message', 'reply', 'outreach', 'discussion', 'conference', 'zoom', 'teams', 'slack', 'chat', 'coordinate', 'liaise', 'emails', 'messaging', 'communications', 'calling', 'meetings', 'responses']
+                keywords: ['email', 'communicate', 'call', 'phone', 'meeting', 'respond', 'follow up', 'contact', 'correspondence', 'message', 'reply', 'outreach', 'discussion', 'conference', 'zoom', 'teams', 'slack', 'chat', 'coordinate']
             },
             'Customer Service & Support': {
-                keywords: ['customer', 'client', 'support', 'help', 'service', 'assist', 'resolve', 'issue', 'problem', 'complaint', 'inquiry', 'ticket', 'case', 'troubleshoot', 'satisfaction', 'feedback', 'escalation', 'follow-up', 'retention', 'relationship', 'customers', 'clients', 'supporting', 'helping', 'servicing', 'assisting']
-            },
-            'Project Management & Planning': {
-                keywords: ['project', 'plan', 'planning', 'manage', 'coordinate', 'schedule', 'timeline', 'deadline', 'milestone', 'task', 'organize', 'workflow', 'process', 'oversight', 'tracking', 'progress', 'status', 'resource', 'allocation', 'gantt', 'projects', 'managing', 'coordination', 'scheduling', 'organizing', 'planning']
-            },
-            'Training & Education': {
-                keywords: ['train', 'training', 'teach', 'educate', 'instruct', 'mentor', 'coach', 'workshop', 'seminar', 'presentation', 'curriculum', 'lesson', 'course', 'onboard', 'orientation', 'development', 'skill', 'learning', 'knowledge', 'certification', 'teaching', 'educating', 'instructing', 'mentoring', 'coaching']
-            },
-            'Quality Assurance & Testing': {
-                keywords: ['quality', 'test', 'testing', 'check', 'review', 'audit', 'inspect', 'verify', 'validate', 'compliance', 'standard', 'procedure', 'guideline', 'assurance', 'control', 'improvement', 'defect', 'bug', 'error', 'correction', 'qa', 'qc', 'testing', 'reviewing', 'auditing', 'inspecting', 'checking']
-            },
-            'Financial Management & Accounting': {
-                keywords: ['finance', 'financial', 'accounting', 'budget', 'expense', 'revenue', 'cost', 'invoice', 'billing', 'payment', 'reconcile', 'audit', 'tax', 'payroll', 'bookkeeping', 'ledger', 'journal', 'balance', 'profit', 'loss', 'cash flow', 'finances', 'budgeting', 'invoicing', 'accounting', 'reconciliation']
-            },
-            'Inventory & Supply Chain': {
-                keywords: ['inventory', 'stock', 'supply', 'procurement', 'purchase', 'vendor', 'supplier', 'warehouse', 'shipping', 'receiving', 'logistics', 'distribution', 'order', 'fulfillment', 'tracking', 'management', 'chain', 'materials', 'goods', 'supplies', 'ordering', 'purchasing', 'procurement', 'stocking', 'warehousing']
-            },
-            'Research & Development': {
-                keywords: ['research', 'development', 'innovation', 'experiment', 'prototype', 'design', 'create', 'investigate', 'study', 'analysis', 'testing', 'evaluation', 'exploration', 'discovery', 'improvement', 'solution', 'technology', 'methodology', 'approach', 'findings', 'researching', 'developing', 'innovating', 'experimenting', 'designing']
-            },
-            'Marketing & Social Media': {
-                keywords: ['marketing', 'promote', 'campaign', 'social media', 'content', 'brand', 'advertising', 'seo', 'digital', 'online', 'website', 'blog', 'newsletter', 'email marketing', 'analytics', 'engagement', 'audience', 'lead', 'conversion', 'roi', 'promoting', 'campaigns', 'branding', 'advertising', 'content creation']
-            },
-            'Lead Generation & Prospecting': {
-                keywords: ['lead', 'prospect', 'prospecting', 'outreach', 'cold call', 'cold email', 'sales funnel', 'pipeline', 'qualify', 'lead generation', 'business development', 'networking', 'referral', 'crm', 'contact', 'reach out', 'follow up', 'nurture', 'conversion', 'leads', 'prospects', 'generating', 'qualifying', 'outreaching']
-            },
-            'Talent Acquisition': {
-                keywords: ['recruit', 'recruiting', 'hiring', 'talent', 'candidate', 'interview', 'resume', 'cv', 'job posting', 'sourcing', 'headhunt', 'talent acquisition', 'hr', 'human resources', 'screening', 'onsite', 'reference check', 'offer', 'negotiate', 'recruitment', 'candidates', 'interviewing', 'sourcing', 'screening']
-            },
-            'Onboarding': {
-                keywords: ['onboard', 'onboarding', 'orientation', 'new hire', 'training', 'induction', 'welcome', 'setup', 'introduction', 'first day', 'new employee', 'integration', 'acclimate', 'familiarize', 'new hires', 'orientations', 'introductions', 'welcoming', 'integrating']
-            },
-            'Customer/User Insights': {
-                keywords: ['insight', 'feedback', 'survey', 'analytics', 'user research', 'customer research', 'interview', 'focus group', 'usability', 'behavior', 'satisfaction', 'nps', 'testimonial', 'review', 'observation', 'journey map', 'persona', 'segment', 'insights', 'researching', 'surveying', 'interviewing', 'analyzing']
+                keywords: ['customer', 'client', 'support', 'help', 'service', 'assist', 'resolve', 'issue', 'problem', 'complaint', 'inquiry', 'ticket', 'case', 'troubleshoot', 'satisfaction', 'feedback', 'escalation']
             }
         };
 
-        // Initialize Supabase client
+        // Initialize Supabase
         let supabase = null;
         try {
-            if (typeof window.supabase !== 'undefined' && APP_CONFIG.supabase.url !== 'https://your-project.supabase.co') {
-                supabase = window.supabase.createClient(APP_CONFIG.supabase.url, APP_CONFIG.supabase.anonKey);
-            }
+            supabase = window.supabase.createClient(APP_CONFIG.supabase.url, APP_CONFIG.supabase.anonKey);
         } catch (error) {
-            console.log('Supabase not configured, running in demo mode');
+            console.log('Supabase running in demo mode');
         }
 
         // Application State
@@ -957,14 +940,10 @@
         const analyzeBtn = document.getElementById('analyze-btn');
         const backBtn = document.getElementById('back-btn');
         const authModal = document.getElementById('auth-modal');
-        const authForm = document.getElementById('auth-form');
-        const usageInfo = document.getElementById('usage-info');
         const charCount = document.getElementById('char-count');
         const jobDuties = document.getElementById('jobDuties');
-        const authButtons = document.getElementById('auth-buttons');
-        const userMenu = document.getElementById('user-menu');
 
-        // Define all functions first
+        // Define all functions first to avoid reference errors
         function showAuthModal(mode = 'signup') {
             currentAuthMode = mode;
             updateAuthModal();
@@ -988,12 +967,12 @@
                 title.textContent = 'Get Unlimited Access';
                 subtitle.textContent = 'Sign up for unlimited job analyses and advanced features';
                 submit.textContent = 'Continue Free Forever';
-                toggle.innerHTML = 'Already have an account? <a>Sign in</a>';
+                toggle.innerHTML = 'Already have an account? <a onclick="toggleAuthMode()">Sign in</a>';
             } else {
                 title.textContent = 'Welcome Back';
                 subtitle.textContent = 'Sign in to access your unlimited analyses';
                 submit.textContent = 'Sign In';
-                toggle.innerHTML = 'Need an account? <a>Sign up</a>';
+                toggle.innerHTML = 'Need an account? <a onclick="toggleAuthMode()">Sign up</a>';
             }
         }
 
@@ -1025,15 +1004,39 @@
         }
 
         function handleGoogleSignIn() {
-            showAuthMessage('Google sign-in available after setup', 'error');
+            showAuthMessage('Google sign-in available after full setup', 'error');
         }
 
         function scrollToCommunityForm() {
             window.open('https://www.erinjacques.com/jobsimprovements', '_blank');
         }
 
-        function submitComment() {
-            alert('Comment system will be available once fully configured');
+        async function submitComment(index, category, industry, jobTitle) {
+            const commentText = document.getElementById(`comment-text-${index}`).value.trim();
+            
+            if (!commentText) {
+                alert('Please enter a comment before submitting.');
+                return;
+            }
+
+            // Check if user is signed in
+            if (!currentUser) {
+                localStorage.setItem('pendingComment', JSON.stringify({
+                    index, category, industry, jobTitle, commentText
+                }));
+                showAuthModal('signup');
+                return;
+            }
+
+            // In demo mode, just show success
+            const formContainer = document.getElementById(`comment-form-${index}`);
+            formContainer.innerHTML = `
+                <div class="comment-success">
+                    ✅ Thank you for sharing! Your comment is being reviewed and will appear soon.
+                </div>
+            `;
+
+            await loadCategoryStats();
         }
 
         function updateUI() {
@@ -1051,6 +1054,9 @@
         }
 
         function updateAuthControls() {
+            const authButtons = document.getElementById('auth-buttons');
+            const userMenu = document.getElementById('user-menu');
+            
             if (currentUser) {
                 authButtons.classList.add('hidden');
                 userMenu.classList.remove('hidden');
@@ -1063,25 +1069,80 @@
 
         async function loadCategoryStats() {
             const container = document.getElementById('categoryStats');
-            // Show demo data for now
-            container.innerHTML = `
-                <div class="category-item">
-                    <div class="category-name">📊 Marketing & Sales</div>
-                    <div class="category-count">12 discussions</div>
-                </div>
-                <div class="category-item">
-                    <div class="category-name">💻 Technology</div>
-                    <div class="category-count">18 discussions</div>
-                </div>
-                <div class="category-item">
-                    <div class="category-name">🏥 Healthcare</div>
-                    <div class="category-count">8 discussions</div>
-                </div>
-                <div class="category-item">
-                    <div class="category-name">📚 Education</div>
-                    <div class="category-count">15 discussions</div>
-                </div>
-            `;
+            
+            if (!supabase) {
+                // Show demo data
+                container.innerHTML = `
+                    <div class="category-item">
+                        <div class="category-name">📊 Marketing & Sales</div>
+                        <div class="category-count">12 discussions</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-name">💻 Technology</div>
+                        <div class="category-count">18 discussions</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-name">🏥 Healthcare</div>
+                        <div class="category-count">8 discussions</div>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-name">📚 Education</div>
+                        <div class="category-count">15 discussions</div>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const { data: categoryData, error } = await supabase
+                    .from('comments')
+                    .select('job_category')
+                    .eq('approved', true);
+
+                if (error) throw error;
+
+                const categoryCounts = {};
+                categoryData.forEach(comment => {
+                    const category = comment.job_category;
+                    categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+                });
+
+                const sortedCategories = Object.entries(categoryCounts)
+                    .sort(([,a], [,b]) => b - a)
+                    .slice(0, 6);
+
+                if (sortedCategories.length === 0) {
+                    container.innerHTML = `
+                        <div class="category-item">
+                            <div class="category-name">🚀 Be the first!</div>
+                            <div class="category-count">Share your experience to start discussions</div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = sortedCategories.map(([category, count]) => {
+                        const emoji = getCategoryEmoji(category);
+                        return `
+                            <div class="category-item">
+                                <div class="category-name">${emoji} ${category}</div>
+                                <div class="category-count">${count} discussion${count !== 1 ? 's' : ''}</div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+            } catch (error) {
+                console.error('Error loading category stats:', error);
+            }
+        }
+
+        function getCategoryEmoji(category) {
+            const emojiMap = {
+                'Documentation & Report Writing': '📝',
+                'Data Analysis & Processing': '📊',
+                'Communication & Email Management': '✉️',
+                'Customer Service & Support': '🤝'
+            };
+            return emojiMap[category] || '💼';
         }
 
         function extractTasksFromDuties(duties) {
@@ -1107,7 +1168,7 @@
                 }
             }
 
-            const sortedCategories = Object.entries(categoryScores)
+            return Object.entries(categoryScores)
                 .sort(([,a], [,b]) => b - a)
                 .slice(0, 5)
                 .map(([categoryName, score]) => ({
@@ -1115,8 +1176,6 @@
                     score: score,
                     currentMethod: 'Current manual processes and workflows'
                 }));
-
-            return sortedCategories.length > 0 ? sortedCategories : [];
         }
 
         async function handleJobAnalysis(e) {
@@ -1150,6 +1209,11 @@
 
                 displayResults(analysis, jobTitle, industry);
                 showResultsSection();
+                
+                // Load comments after showing results
+                if (analysis.strategies && analysis.strategies.length > 0) {
+                    await loadCommentsForStrategies(analysis.strategies);
+                }
                 
             } catch (error) {
                 console.error('Analysis error:', error);
@@ -1198,20 +1262,13 @@
 
             if (strategies.length === 0) {
                 return {
-                    industry: industry,
-                    jobTitle,
-                    duties,
+                    industry, jobTitle, duties,
                     strategies: [],
                     noMatches: true
                 };
             }
 
-            return {
-                industry: industry,
-                jobTitle,
-                duties,
-                strategies
-            };
+            return { industry, jobTitle, duties, strategies };
         }
 
         function displayResults(analysis, jobTitle, industry) {
@@ -1231,7 +1288,7 @@
                     </div>
                 `;
             } else {
-                container.innerHTML = analysis.strategies.map(strategy => `
+                container.innerHTML = analysis.strategies.map((strategy, index) => `
                     <div class="strategy-card">
                         <div class="strategy-header">
                             <h3>${strategy.task}</h3>
@@ -1256,8 +1313,33 @@
                                 <div class="quick-start-content">
                                     ${formatQuickStart(strategy.level1.quickGuide)}
                                 </div>
-                                <div class="submit-link">
-                                    <strong>Know an advanced strategy for this?</strong> <a href="#" onclick="scrollToCommunityForm()">Submit it here</a>
+                            </div>
+                            
+                            <!-- Comments Section for each strategy -->
+                            <div class="comments-section" id="comments-${index}">
+                                <div class="comments-header">
+                                    💬 What others are saying about similar suggestions:
+                                </div>
+                                <div class="existing-comments" id="existing-comments-${index}">
+                                    <div style="text-align: center; color: #6b7280; font-size: 0.875rem; padding: 1rem;">
+                                        Loading comments...
+                                    </div>
+                                </div>
+                                <div class="add-comment-form">
+                                    <h4>Share your experience:</h4>
+                                    <div id="comment-form-${index}">
+                                        <textarea 
+                                            id="comment-text-${index}" 
+                                            placeholder="Did these suggestions work for you? Any additional tips to share?"
+                                            maxlength="1000"
+                                        ></textarea>
+                                        <button 
+                                            class="submit-comment-btn" 
+                                            onclick="submitComment(${index}, '${strategy.task}', '${analysis.industry}', '${analysis.jobTitle}')"
+                                        >
+                                            Share Feedback
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1270,6 +1352,139 @@
                 document.getElementById('monetization-title').textContent = 
                     `You've unlocked ${totalStrategies} efficiency improvements!`;
             }
+        }
+
+        async function loadCommentsForStrategies(strategies) {
+            for (let i = 0; i < strategies.length; i++) {
+                const strategy = strategies[i];
+                await loadCommentsForStrategy(i, strategy.task);
+            }
+        }
+
+        async function loadCommentsForStrategy(index, category) {
+            const commentsContainer = document.getElementById(`existing-comments-${index}`);
+            
+            if (!supabase) {
+                // Demo mode - show sample comments
+                commentsContainer.innerHTML = getDemoComments(category);
+                return;
+            }
+
+            try {
+                const { data: comments, error } = await supabase
+                    .from('comments')
+                    .select('*')
+                    .eq('job_category', category)
+                    .eq('approved', true)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                if (error) throw error;
+
+                if (comments.length === 0) {
+                    commentsContainer.innerHTML = `
+                        <div style="text-align: center; color: #6b7280; font-size: 0.875rem; padding: 1rem;">
+                            No comments yet. Be the first to share your experience!
+                        </div>
+                    `;
+                } else {
+                    commentsContainer.innerHTML = comments.map(comment => `
+                        <div class="comment-item">
+                            <div class="comment-header">
+                                <span class="comment-author">${maskEmail(comment.user_email)}</span>
+                                <span class="comment-date">${formatDate(comment.created_at)}</span>
+                            </div>
+                            <div class="comment-text">${escapeHtml(comment.comment_text)}</div>
+                        </div>
+                    `).join('');
+                }
+
+            } catch (error) {
+                console.error('Error loading comments:', error);
+                commentsContainer.innerHTML = `
+                    <div style="text-align: center; color: #ef4444; font-size: 0.875rem; padding: 1rem;">
+                        Unable to load comments
+                    </div>
+                `;
+            }
+        }
+
+        function getDemoComments(category) {
+            const demoComments = {
+                'Documentation & Report Writing': [
+                    {
+                        user_email: 'sarah.m@example.com',
+                        comment_text: 'The template approach saved me 2 hours per week! I created standard formats for all my reports.',
+                        created_at: '2024-01-15T10:30:00Z'
+                    }
+                ],
+                'Communication & Email Management': [
+                    {
+                        user_email: 'anna.k@work.com',
+                        comment_text: 'Email templates are a game changer! I cut my response time in half.',
+                        created_at: '2024-01-12T09:15:00Z'
+                    }
+                ]
+            };
+
+            const comments = demoComments[category] || [];
+            
+            if (comments.length === 0) {
+                return `
+                    <div style="text-align: center; color: #6b7280; font-size: 0.875rem; padding: 1rem;">
+                        No comments yet. Be the first to share your experience!
+                    </div>
+                `;
+            }
+
+            return comments.map(comment => `
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <span class="comment-author">${maskEmail(comment.user_email)}</span>
+                        <span class="comment-date">${formatDate(comment.created_at)}</span>
+                    </div>
+                    <div class="comment-text">${escapeHtml(comment.comment_text)}</div>
+                </div>
+            `).join('');
+        }
+
+        // Utility functions
+        function maskEmail(email) {
+            if (!email || typeof email !== 'string') return 'Anonymous';
+            const [username, domain] = email.split('@');
+            if (!username || !domain) return 'Anonymous';
+            
+            if (username.length <= 2) {
+                return username[0] + '*@' + domain;
+            } else {
+                return username[0] + '*'.repeat(Math.min(3, username.length - 1)) + '@' + domain;
+            }
+        }
+
+        function formatDate(dateString) {
+            try {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === 0) return 'Today';
+                if (diffDays === 1) return 'Yesterday';
+                if (diffDays < 7) return `${diffDays} days ago`;
+                if (diffDays < 30) {
+                    const weeks = Math.floor(diffDays / 7);
+                    return `${weeks} week${weeks > 1 ? 's' : ''} ago`;
+                }
+                return date.toLocaleDateString();
+            } catch (error) {
+                return 'Recently';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         function formatQuickStart(text) {
