@@ -911,14 +911,13 @@ Analyze their specific workflow and provide 2-4 strategies that address their ac
 
         async function enhanceWithAI(userData) {
             const { industry, jobTitle, duties } = userData;
-            const prompt = buildAIPrompt(industry, jobTitle, duties);
             
             if (!supabase) {
                 throw new Error('AI analysis requires authentication');
             }
             
             const { data, error } = await supabase.functions.invoke('enhance-job-analysis', {
-                body: { prompt }
+                body: { industry, jobTitle, duties }
             });
             
             if (error) throw error;
