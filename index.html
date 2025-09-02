@@ -929,29 +929,40 @@ Analyze their specific workflow and provide 2-4 strategies that address their ac
                     throw new Error('Invalid AI response structure');
                 }
                 
-                const responseText = data.choices[0].message.content;
-                console.log('AI response text:', responseText);
+                const responseContent = data.choices[0].message.content;
+                console.log('AI response content:', responseContent);
+                console.log('Response content type:', typeof responseContent);
                 
-                if (!responseText) {
+                if (!responseContent) {
                     throw new Error('Empty AI response');
                 }
                 
-                // The response is already a parsed object, try to parse as JSON
+                // Handle different response types
                 let aiResponse;
-                if (typeof responseText === 'string') {
-                    // If it's a string, try to extract JSON
-                    let jsonMatch = responseText.match(/\{[\s\S]*\}/);
-                    if (jsonMatch) {
-                        aiResponse = JSON.parse(jsonMatch[0]);
-                    } else {
-                        aiResponse = JSON.parse(responseText);
+                
+                if (typeof responseContent === 'object') {
+                    // If it's already an object, use it directly
+                    aiResponse = responseContent;
+                } else if (typeof responseContent === 'string') {
+                    // If it's a string, try to parse JSON
+                    try {
+                        aiResponse = JSON.parse(responseContent);
+                    } catch (jsonError) {
+                        // Try to extract JSON from mixed text
+                        let jsonMatch = responseContent.match(/\{[\s\S]*\}/);
+                        if (jsonMatch) {
+                            aiResponse = JSON.parse(jsonMatch[0]);
+                        } else {
+                            throw jsonError;
+                        }
                     }
                 } else {
-                    // If it's already an object, use it directly
-                    aiResponse = responseText;
+                    throw new Error('Unexpected response content type');
                 }
                 
+                console.log('Parsed AI response:', aiResponse);
                 return aiResponse;
+                
             } catch (parseError) {
                 console.error('Failed to parse AI response:', parseError);
                 console.error('Raw AI response data:', data);
