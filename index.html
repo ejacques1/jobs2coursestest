@@ -923,7 +923,18 @@ Analyze their specific workflow and provide 2-4 strategies that address their ac
             if (error) throw error;
             
             try {
+                console.log('Raw AI API response:', data);
+                
+                if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                    throw new Error('Invalid AI response structure');
+                }
+                
                 const responseText = data.choices[0].message.content;
+                console.log('AI response text:', responseText);
+                
+                if (!responseText) {
+                    throw new Error('Empty AI response');
+                }
                 
                 // Try to extract JSON from the response
                 let jsonMatch = responseText.match(/\{[\s\S]*\}/);
@@ -937,7 +948,7 @@ Analyze their specific workflow and provide 2-4 strategies that address their ac
                 }
             } catch (parseError) {
                 console.error('Failed to parse AI response:', parseError);
-                console.error('Raw AI response:', data.choices[0].message.content);
+                console.error('Raw AI response data:', data);
                 throw new Error('AI response format error');
             }
         }
