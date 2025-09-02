@@ -936,16 +936,22 @@ Analyze their specific workflow and provide 2-4 strategies that address their ac
                     throw new Error('Empty AI response');
                 }
                 
-                // Try to extract JSON from the response
-                let jsonMatch = responseText.match(/\{[\s\S]*\}/);
-                if (jsonMatch) {
-                    const aiResponse = JSON.parse(jsonMatch[0]);
-                    return aiResponse;
+                // The response is already a parsed object, try to parse as JSON
+                let aiResponse;
+                if (typeof responseText === 'string') {
+                    // If it's a string, try to extract JSON
+                    let jsonMatch = responseText.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        aiResponse = JSON.parse(jsonMatch[0]);
+                    } else {
+                        aiResponse = JSON.parse(responseText);
+                    }
                 } else {
-                    // If no JSON found, try parsing the whole response
-                    const aiResponse = JSON.parse(responseText);
-                    return aiResponse;
+                    // If it's already an object, use it directly
+                    aiResponse = responseText;
                 }
+                
+                return aiResponse;
             } catch (parseError) {
                 console.error('Failed to parse AI response:', parseError);
                 console.error('Raw AI response data:', data);
