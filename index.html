@@ -10,6 +10,28 @@
             padding: 0;
             box-sizing: border-box;
         }
+
+        async function rateAnalysis(rating) {
+            try {
+                if (supabase && currentUser) {
+                    await supabase.from('ratings').insert([{
+                        user_id: currentUser.id,
+                        rating: rating,
+                        created_at: new Date().toISOString()
+                    }]);
+                }
+                
+                document.getElementById('rating-response').textContent = 'Thanks for your feedback!';
+                
+                // Hide the buttons after rating
+                const buttons = document.querySelectorAll('[onclick^="rateAnalysis"]');
+                buttons.forEach(btn => btn.style.display = 'none');
+                
+            } catch (error) {
+                console.error('Rating error:', error);
+                document.getElementById('rating-response').textContent = 'Thank you!'; // Still show thanks even if save fails
+            }
+        }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -120,51 +142,6 @@
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
-        }
-        
-        /* Category Preview Styles */
-        .category-preview {
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .category-preview h3 {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            color: #374151;
-        }
-        
-        .category-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-        
-        .category-item {
-            background: #f9fafb;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            border-left: 3px solid #3b82f6;
-            font-size: 0.875rem;
-        }
-        
-        .category-name {
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 0.25rem;
-        }
-        
-        .category-count {
-            color: #6b7280;
-            font-size: 0.8rem;
         }
         
         .form-group {
@@ -383,135 +360,6 @@
             display: none;
         }
         
-        /* Comments Section Styles */
-        .comments-section {
-            margin-top: 2rem;
-            border-top: 2px solid #e5e7eb;
-            padding-top: 2rem;
-        }
-        
-        .comments-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #374151;
-        }
-        
-        .existing-comments {
-            margin-bottom: 2rem;
-        }
-        
-        .comment-item {
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-left: 3px solid #3b82f6;
-        }
-        
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        .comment-author {
-            font-weight: 500;
-            color: #374151;
-            font-size: 0.875rem;
-        }
-        
-        .comment-date {
-            font-size: 0.75rem;
-            color: #6b7280;
-        }
-        
-        .comment-text {
-            color: #4b5563;
-            font-size: 0.875rem;
-            line-height: 1.5;
-        }
-        
-        .add-comment-form {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-        }
-        
-        .add-comment-form h4 {
-            margin-bottom: 1rem;
-            color: #374151;
-            font-size: 1rem;
-        }
-        
-        .add-comment-form textarea {
-            width: 100%;
-            min-height: 100px;
-            margin-bottom: 1rem;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            resize: vertical;
-        }
-        
-        .submit-comment-btn {
-            background: #10b981;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.375rem;
-            border: none;
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .submit-comment-btn:hover {
-            background: #059669;
-        }
-        
-        .submit-comment-btn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
-        
-        .comment-success {
-            background: #d1fae5;
-            color: #065f46;
-            padding: 1rem;
-            border-radius: 0.375rem;
-            margin-bottom: 1rem;
-            text-align: center;
-            font-size: 0.875rem;
-        }
-        
-        .submit-link {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            background: #f0f9ff;
-            border-radius: 0.5rem;
-            border-left: 4px solid #3b82f6;
-            font-size: 0.875rem;
-            color: #1e40af;
-        }
-        
-        .submit-link a {
-            color: #3b82f6;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        .submit-link a:hover {
-            text-decoration: underline;
-        }
-        
         .no-match-message {
             background: white;
             border-radius: 1rem;
@@ -531,53 +379,6 @@
         .no-match-message p {
             color: #6b7280;
             margin-bottom: 1.5rem;
-        }
-        
-        .monetization-cta {
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border-radius: 1rem;
-            color: white;
-            padding: 2rem;
-            text-align: center;
-            margin-top: 3rem;
-        }
-        
-        .monetization-cta h3 {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-        
-        .monetization-cta p {
-            font-size: 1.125rem;
-            margin-bottom: 1.5rem;
-            opacity: 0.9;
-        }
-        
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .cta-btn {
-            background: white;
-            color: #3b82f6;
-            padding: 0.75rem 2rem;
-            border-radius: 0.5rem;
-            border: none;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .cta-btn:hover {
-            background: #f3f4f6;
-            transform: translateY(-2px);
         }
         
         .auth-modal {
@@ -716,15 +517,6 @@
                 flex-direction: column;
                 text-align: center;
             }
-            
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .category-stats {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -800,23 +592,12 @@
                 </form>
             </div>
 
-            <!-- Category Preview Section -->
-            <div class="category-preview">
-                <h3>See what's working in your field:</h3>
-                <div id="categoryStats" class="category-stats">
-                    <div class="category-item">
-                        <div class="category-name">Loading discussions...</div>
-                        <div class="category-count">Fetching data...</div>
-                    </div>
-                </div>
-            </div>
-
             <div class="features">
                 <div class="feature-card">
                     <div style="font-size: 2rem; font-weight: bold; color: #3b82f6; margin-bottom: 1rem;">JOBS</div>
                     <div class="feature-icon level1">⚡</div>
-                    <h3>Level 1: Quick Wins</h3>
-                    <p>Simple AI tools you can implement in 30 minutes for 20-30% efficiency gains</p>
+                    <h3>AI-Powered Analysis</h3>
+                    <p>Get personalized strategies based on your specific workflow and industry compliance needs</p>
                 </div>
                 <div class="feature-card">
                     <div style="font-size: 2rem; font-weight: bold; color: #3b82f6; margin-bottom: 1rem;">COURSES</div>
@@ -838,14 +619,6 @@
 
                 <div id="strategies-container">
                     <!-- Dynamic content will be inserted here -->
-                </div>
-
-                <div class="monetization-cta">
-                    <h3 id="monetization-title">You've unlocked efficiency improvements!</h3>
-                    <p id="monetization-text">Imagine turning these strategies into modules of a $197 course. Your expertise combined with these AI workflows could help thousands of professionals in your field.</p>
-                    <div class="cta-buttons">
-                        <a href="https://www.erinjacques.com/jobsimprovements" target="_blank" class="cta-btn" id="waitlist-btn">Join Course Creator Waitlist</a>
-                    </div>
                 </div>
             </div>
         </div>
@@ -884,11 +657,9 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js"></script>
-    <script src="job-library.js"></script>
     
     <script>
-        // Configuration - Using settings from your working live version
+        // Configuration
         const APP_CONFIG = {
             supabase: {
                 url: 'https://hrgxcgdpyoeurxbpcatn.supabase.co',
@@ -897,55 +668,6 @@
             usage: {
                 freeAnalyses: 5,
                 resetPeriod: 24 * 60 * 60 * 1000
-            }
-        };
-
-        // Task Categories with Keywords from your live version (all 15 categories)
-        const taskCategories = {
-            'Documentation & Report Writing': {
-                keywords: ['report', 'document', 'write', 'record', 'log', 'note', 'summary', 'memo', 'brief', 'paper', 'documentation', 'filing', 'paperwork', 'forms', 'chart', 'journal', 'transcript', 'minutes', 'proposal', 'presentation', 'draft', 'documentation', 'writing', 'documenting', 'reports', 'charts', 'charting', 'notes', 'recording', 'logging']
-            },
-            'Data Analysis & Processing': {
-                keywords: ['data', 'analyze', 'analysis', 'spreadsheet', 'excel', 'numbers', 'calculate', 'metrics', 'statistics', 'stats', 'kpi', 'dashboard', 'chart', 'graph', 'pivot', 'formula', 'database', 'sql', 'query', 'trend', 'forecast', 'budget', 'financial', 'analytics', 'processing', 'calculations', 'formulas', 'pivot tables', 'visualizations']
-            },
-            'Communication & Email Management': {
-                keywords: ['email', 'communicate', 'call', 'phone', 'meeting', 'respond', 'follow up', 'contact', 'correspondence', 'message', 'reply', 'outreach', 'discussion', 'conference', 'zoom', 'teams', 'slack', 'chat', 'coordinate', 'liaise', 'emails', 'messaging', 'communications', 'calling', 'meetings', 'responses']
-            },
-            'Customer Service & Support': {
-                keywords: ['customer', 'client', 'support', 'help', 'service', 'assist', 'resolve', 'issue', 'problem', 'complaint', 'inquiry', 'ticket', 'case', 'troubleshoot', 'satisfaction', 'feedback', 'escalation', 'follow-up', 'retention', 'relationship', 'customers', 'clients', 'supporting', 'helping', 'servicing', 'assisting']
-            },
-            'Project Management & Planning': {
-                keywords: ['project', 'plan', 'planning', 'manage', 'coordinate', 'schedule', 'timeline', 'deadline', 'milestone', 'task', 'organize', 'workflow', 'process', 'oversight', 'tracking', 'progress', 'status', 'resource', 'allocation', 'gantt', 'projects', 'managing', 'coordination', 'scheduling', 'organizing', 'planning']
-            },
-            'Training & Education': {
-                keywords: ['train', 'training', 'teach', 'educate', 'instruct', 'mentor', 'coach', 'workshop', 'seminar', 'presentation', 'curriculum', 'lesson', 'course', 'onboard', 'orientation', 'development', 'skill', 'learning', 'knowledge', 'certification', 'teaching', 'educating', 'instructing', 'mentoring', 'coaching']
-            },
-            'Quality Assurance & Testing': {
-                keywords: ['quality', 'test', 'testing', 'check', 'review', 'audit', 'inspect', 'verify', 'validate', 'compliance', 'standard', 'procedure', 'guideline', 'assurance', 'control', 'improvement', 'defect', 'bug', 'error', 'correction', 'qa', 'qc', 'testing', 'reviewing', 'auditing', 'inspecting', 'checking']
-            },
-            'Financial Management & Accounting': {
-                keywords: ['finance', 'financial', 'accounting', 'budget', 'expense', 'revenue', 'cost', 'invoice', 'billing', 'payment', 'reconcile', 'audit', 'tax', 'payroll', 'bookkeeping', 'ledger', 'journal', 'balance', 'profit', 'loss', 'cash flow', 'finances', 'budgeting', 'invoicing', 'accounting', 'reconciliation']
-            },
-            'Inventory & Supply Chain': {
-                keywords: ['inventory', 'stock', 'supply', 'procurement', 'purchase', 'vendor', 'supplier', 'warehouse', 'shipping', 'receiving', 'logistics', 'distribution', 'order', 'fulfillment', 'tracking', 'management', 'chain', 'materials', 'goods', 'supplies', 'ordering', 'purchasing', 'procurement', 'stocking', 'warehousing']
-            },
-            'Research & Development': {
-                keywords: ['research', 'development', 'innovation', 'experiment', 'prototype', 'design', 'create', 'investigate', 'study', 'analysis', 'testing', 'evaluation', 'exploration', 'discovery', 'improvement', 'solution', 'technology', 'methodology', 'approach', 'findings', 'researching', 'developing', 'innovating', 'experimenting', 'designing']
-            },
-            'Marketing & Social Media': {
-                keywords: ['marketing', 'promote', 'campaign', 'social media', 'content', 'brand', 'advertising', 'seo', 'digital', 'online', 'website', 'blog', 'newsletter', 'email marketing', 'analytics', 'engagement', 'audience', 'lead', 'conversion', 'roi', 'promoting', 'campaigns', 'branding', 'advertising', 'content creation']
-            },
-            'Lead Generation & Prospecting': {
-                keywords: ['lead', 'prospect', 'prospecting', 'outreach', 'cold call', 'cold email', 'sales funnel', 'pipeline', 'qualify', 'lead generation', 'business development', 'networking', 'referral', 'crm', 'contact', 'reach out', 'follow up', 'nurture', 'conversion', 'leads', 'prospects', 'generating', 'qualifying', 'outreaching']
-            },
-            'Talent Acquisition': {
-                keywords: ['recruit', 'recruiting', 'hiring', 'talent', 'candidate', 'interview', 'resume', 'cv', 'job posting', 'sourcing', 'headhunt', 'talent acquisition', 'hr', 'human resources', 'screening', 'onsite', 'reference check', 'offer', 'negotiate', 'recruitment', 'candidates', 'interviewing', 'sourcing', 'screening']
-            },
-            'Onboarding': {
-                keywords: ['onboard', 'onboarding', 'orientation', 'new hire', 'training', 'induction', 'welcome', 'setup', 'introduction', 'first day', 'new employee', 'integration', 'acclimate', 'familiarize', 'new hires', 'orientations', 'introductions', 'welcoming', 'integrating']
-            },
-            'Customer/User Insights': {
-                keywords: ['insight', 'feedback', 'survey', 'analytics', 'user research', 'customer research', 'interview', 'focus group', 'usability', 'behavior', 'satisfaction', 'nps', 'testimonial', 'review', 'observation', 'journey map', 'persona', 'segment', 'insights', 'researching', 'surveying', 'interviewing', 'analyzing']
             }
         };
 
@@ -963,7 +685,6 @@
         let currentUser = null;
         let usageCount = 5;
         let currentAuthMode = 'signup';
-        let currentAnalysis = null;
 
         // DOM Elements
         const formSection = document.getElementById('form-section');
@@ -988,7 +709,6 @@
         async function initializeApp() {
             await loadUserSession();
             updateUI();
-            await loadCategoryStats();
             
             // Set up auth state listener if Supabase is available
             if (supabase) {
@@ -1080,92 +800,266 @@
             }
         }
 
-        async function loadCategoryStats() {
-            const container = document.getElementById('categoryStats');
+        // AI Prompt Builder
+        function buildAIPrompt(industry, jobTitle, duties) {
+            return `You are an expert job efficiency consultant. Analyze this job and return efficiency strategies that are practical and implementable.
+
+COMPLIANCE REQUIREMENTS BY INDUSTRY:
+- Healthcare: HIPAA compliance - never suggest entering PHI into AI tools
+- Education: FERPA compliance - no student identifiable information in AI
+- Finance: SEC/FINRA rules - no non-public client data in AI tools
+- All industries: Remove personal identifiers before using AI tools
+
+STRATEGY COMPLEXITY REQUIREMENTS:
+- Assume users have basic computer skills but aren't tech experts
+- Suggest tools that require minimal training (30 minutes or less to learn)
+- Avoid solutions requiring custom coding, enterprise software, or IT approval
+- Prioritize accessible tools and realistic time estimates
+- Don't oversell efficiency gains - be realistic about 20-30% improvements
+
+RECOMMENDED AI TOOLS BY CATEGORY:
+General AI: ChatGPT, Claude, Gemini, Microsoft Copilot
+Design/Presentations: Gamma, Canva, Beautiful.AI  
+Research: Perplexity, Bing Chat
+Privacy-focused: AnythingLLM, GPT4All (local processing)
+Office Integration: Microsoft Copilot, Google Workspace AI
+Workflow: Zapier, Make (formerly Integromat)
+
+IMPLEMENTATION GUIDE REQUIREMENTS:
+- Limit to 3-5 clear action steps maximum
+- Each step should take 5-15 minutes to complete
+- Use specific button names, menu locations, exact phrases
+- Include one "quick win" that shows immediate results
+- End with a simple test to verify it's working
+
+RETURN EXACTLY THIS JSON FORMAT:
+{
+  "strategies": [
+    {
+      "task": "Specific workflow area from their duties",
+      "currentMethod": "How they currently handle this task",
+      "level1": {
+        "description": "AI-powered efficiency strategy with privacy considerations",
+        "tools": "Specific recommended tools with free/paid options",
+        "setupTime": "Realistic implementation time",
+        "weeklySavings": "Expected time savings per week",
+        "efficiencyGain": 25,
+        "quickGuide": "3-5 specific implementation steps with UI references",
+        "complianceNotes": "Industry-specific privacy/legal requirements"
+      }
+    }
+  ]
+}
+
+User Details:
+Industry: ${industry}
+Job Title: ${jobTitle}
+Duties: ${duties}
+
+Analyze their specific workflow and provide 2-4 strategies that address their actual daily tasks. Be specific and actionable.`;
+        }
+
+        // Job Analysis Functions
+        async function handleJobAnalysis(e) {
+            e.preventDefault();
             
-            if (!supabase) {
-                container.innerHTML = `
-                    <div class="category-item">
-                        <div class="category-name">📊 Marketing & Sales</div>
-                        <div class="category-count">12 discussions</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-name">💻 Technology</div>
-                        <div class="category-count">18 discussions</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-name">🏥 Healthcare</div>
-                        <div class="category-count">8 discussions</div>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-name">📚 Education</div>
-                        <div class="category-count">15 discussions</div>
-                    </div>
-                `;
+            const industry = document.getElementById('industry').value;
+            const jobTitle = document.getElementById('jobTitle').value.trim();
+            const duties = document.getElementById('jobDuties').value.trim();
+
+            if (!industry || !jobTitle || !duties) {
+                alert('Please fill in all required fields');
                 return;
             }
 
+            if (!currentUser && usageCount <= 0) {
+                showAuthModal('signup');
+                return;
+            }
+
+            showAnalysisLoading();
+
             try {
-                const { data: categoryData, error } = await supabase
-                    .from('comments')
-                    .select('job_category')
-                    .eq('approved', true);
-
-                if (error) throw error;
-
-                const categoryCounts = {};
-                categoryData.forEach(comment => {
-                    const category = comment.job_category;
-                    categoryCounts[category] = (categoryCounts[category] || 0) + 1;
-                });
-
-                const sortedCategories = Object.entries(categoryCounts)
-                    .sort(([,a], [,b]) => b - a)
-                    .slice(0, 6);
-
-                if (sortedCategories.length === 0) {
-                    container.innerHTML = `
-                        <div class="category-item">
-                            <div class="category-name">🚀 Be the first!</div>
-                            <div class="category-count">Share your experience to start discussions</div>
-                        </div>
-                    `;
-                } else {
-                    container.innerHTML = sortedCategories.map(([category, count]) => {
-                        const emoji = getCategoryEmoji(category);
-                        return `
-                            <div class="category-item">
-                                <div class="category-name">${emoji} ${category}</div>
-                                <div class="category-count">${count} discussion${count !== 1 ? 's' : ''}</div>
-                            </div>
-                        `;
-                    }).join('');
+                const analysis = await analyzeJobDuties(industry, jobTitle, duties);
+                
+                if (!currentUser) {
+                    usageCount--;
+                    localStorage.setItem('jobs2course_usage', usageCount.toString());
+                    updateUsageDisplay();
                 }
 
+                displayResults(analysis, jobTitle, industry);
+                showResultsSection();
+                
             } catch (error) {
-                console.error('Error loading category stats:', error);
+                console.error('Analysis error:', error);
+                alert('Analysis failed. Please try again.');
+            } finally {
+                hideAnalysisLoading();
             }
         }
 
-        function getCategoryEmoji(category) {
-            const emojiMap = {
-                'Documentation & Report Writing': '📝',
-                'Data Analysis & Processing': '📊',
-                'Communication & Email Management': '✉️',
-                'Customer Service & Support': '🤝',
-                'Project Management & Planning': '📋',
-                'Training & Education': '🎓',
-                'Quality Assurance & Testing': '✅',
-                'Financial Management & Accounting': '💰',
-                'Inventory & Supply Chain': '📦',
-                'Research & Development': '🔬',
-                'Marketing & Social Media': '📢',
-                'Lead Generation & Prospecting': '🎯',
-                'Talent Acquisition': '👥',
-                'Onboarding': '🚀',
-                'Customer/User Insights': '💡'
-            };
-            return emojiMap[category] || '💼';
+        async function analyzeJobDuties(industry, jobTitle, duties) {
+            try {
+                const aiResult = await enhanceWithAI({ industry, jobTitle, duties });
+                return aiResult;
+            } catch (error) {
+                console.error('AI analysis failed:', error);
+                return { noMatches: true };
+            }
+        }
+
+        async function enhanceWithAI(userData) {
+            const { industry, jobTitle, duties } = userData;
+            const prompt = buildAIPrompt(industry, jobTitle, duties);
+            
+            if (!supabase) {
+                throw new Error('AI analysis requires authentication');
+            }
+            
+            const { data, error } = await supabase.functions.invoke('enhance-job-analysis', {
+                body: { prompt }
+            });
+            
+            if (error) throw error;
+            
+            try {
+                const aiResponse = JSON.parse(data.choices[0].message.content);
+                return aiResponse;
+            } catch (parseError) {
+                console.error('Failed to parse AI response:', parseError);
+                throw new Error('AI response format error');
+            }
+        }
+
+        function displayResults(analysis, jobTitle, industry) {
+            document.getElementById('results-title').textContent = `AI Efficiency Analysis for ${jobTitle}`;
+            document.getElementById('results-subtitle').textContent = `Personalized strategies based on your ${industry} workflows`;
+            
+            const container = document.getElementById('strategies-container');
+            
+            if (analysis.noMatches || !analysis.strategies || analysis.strategies.length === 0) {
+                container.innerHTML = `
+                    <div class="no-match-message">
+                        <h3>Analysis Unavailable</h3>
+                        <p>We're unable to generate strategies for your role at this time. Please try again later.</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = analysis.strategies.map((strategy, index) => `
+                    <div class="strategy-card">
+                        <div class="strategy-header">
+                            <h3>${strategy.task}</h3>
+                            <p style="color: #6b7280; margin-top: 0.5rem;">Current: ${strategy.currentMethod}</p>
+                        </div>
+                        <div class="strategy-content">
+                            <div class="level-card">
+                                <div class="level-header">
+                                    <span style="font-size: 1.25rem;">⚡</span>
+                                    <h4>AI-Powered Strategy</h4>
+                                    <span class="gain-badge">+${strategy.level1.efficiencyGain || '25'}%</span>
+                                </div>
+                                <p style="font-size: 0.875rem; margin-bottom: 0.5rem;">${strategy.level1.description}</p>
+                                <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.75rem;">
+                                    <strong>Tools:</strong> ${strategy.level1.tools || 'AI-powered automation tools'}<br>
+                                    <strong>Setup:</strong> ${strategy.level1.setupTime || '30 minutes'} | 
+                                    <strong>Weekly Savings:</strong> ${strategy.level1.weeklySavings || '3-5 hours'}
+                                    ${strategy.level1.complianceNotes ? `<br><strong>Compliance:</strong> ${strategy.level1.complianceNotes}` : ''}
+                                </div>
+                                <button class="quick-start-btn" onclick="toggleQuickStart(this)">
+                                    Quick Start Guide ▼
+                                </button>
+                                <div class="quick-start-content">
+                                    ${formatQuickStart(strategy.level1.quickGuide)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('') + `
+                <div style="background: white; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); padding: 2rem; margin-top: 2rem; text-align: center;">
+                    <h4 style="margin-bottom: 1rem;">How useful was this analysis?</h4>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <button onclick="rateAnalysis('excellent')" style="background: #10b981; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem; cursor: pointer;">Very helpful</button>
+                        <button onclick="rateAnalysis('good')" style="background: #3b82f6; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem; cursor: pointer;">Somewhat helpful</button>
+                        <button onclick="rateAnalysis('poor')" style="background: #6b7280; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem; cursor: pointer;">Not helpful</button>
+                    </div>
+                    <div id="rating-response" style="margin-top: 1rem; font-size: 0.875rem; color: #6b7280;"></div>
+                </div>
+                `;
+            }
+        }
+
+        function formatQuickStart(text) {
+            if (!text) return 'Detailed implementation guide based on your specific workflow.';
+            
+            return text.split('\n').map(line => {
+                if (line.match(/^\d+\./)) {
+                    return `<strong>${line}</strong>`;
+                }
+                return line;
+            }).join('<br>');
+        }
+
+        function toggleQuickStart(button) {
+            const content = button.nextElementSibling;
+            const isVisible = content.style.display !== 'none';
+            
+            if (isVisible) {
+                content.style.display = 'none';
+                button.innerHTML = 'Quick Start Guide ▼';
+            } else {
+                content.style.display = 'block';
+                button.innerHTML = 'Quick Start Guide ▲';
+            }
+        }
+
+        // UI Helper Functions
+        function showAnalysisLoading() {
+            const loadingMessages = [
+                "Analyzing your workflow...",
+                "Understanding your industry requirements...", 
+                "Generating personalized strategies...",
+                "Applying compliance guidelines...",
+                "Finalizing recommendations..."
+            ];
+            
+            let messageIndex = 0;
+            analyzeBtn.innerHTML = '<div class="spinner"></div> <span id="loading-text">' + loadingMessages[0] + '</span>';
+            analyzeBtn.disabled = true;
+            
+            const interval = setInterval(() => {
+                messageIndex = (messageIndex + 1) % loadingMessages.length;
+                const loadingText = document.getElementById('loading-text');
+                if (loadingText) {
+                    loadingText.textContent = loadingMessages[messageIndex];
+                }
+            }, 1500);
+            
+            // Store interval to clear it later
+            analyzeBtn.loadingInterval = interval;
+        }
+
+        function hideAnalysisLoading() {
+            // Clear the loading message interval
+            if (analyzeBtn.loadingInterval) {
+                clearInterval(analyzeBtn.loadingInterval);
+                analyzeBtn.loadingInterval = null;
+            }
+            
+            analyzeBtn.innerHTML = '<span>Analyze My Job & Get Efficiency Strategies</span>';
+            analyzeBtn.disabled = false;
+        }
+
+        function showFormSection() {
+            resultsSection.classList.add('hidden');
+            formSection.classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function showResultsSection() {
+            formSection.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+            window.scrollTo(0, 0);
         }
 
         // Auth Modal Functions
@@ -1343,26 +1237,6 @@
             localStorage.removeItem('jobs2course_usage');
             
             updateUI();
-            loadCategoryStats();
-
-            // Handle pending comment
-            const pendingComment = localStorage.getItem('pendingComment');
-            if (pendingComment) {
-                try {
-                    const comment = JSON.parse(pendingComment);
-                    localStorage.removeItem('pendingComment');
-                    
-                    setTimeout(() => {
-                        const textArea = document.getElementById(`comment-text-${comment.index}`);
-                        if (textArea) {
-                            textArea.value = comment.commentText;
-                            submitComment(comment.index, comment.category, comment.industry, comment.jobTitle);
-                        }
-                    }, 500);
-                } catch (error) {
-                    console.error('Error processing pending comment:', error);
-                }
-            }
         }
 
         async function handleLogout() {
@@ -1391,475 +1265,26 @@
             updateUI();
         }
 
-        // Task Extraction - Using improved keyword matching from your live version
-        function extractTasksFromDuties(duties) {
-            if (!duties || duties.trim().length === 0) {
-                return [];
-            }
-
-            const inputText = duties.toLowerCase();
-            const categoryScores = {};
-
-            // Score each category based on keyword matches
-            for (const [categoryName, categoryData] of Object.entries(taskCategories)) {
-                let score = 0;
-                const keywords = categoryData.keywords;
-                
-                for (const keyword of keywords) {
-                    const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
-                    const matches = (inputText.match(regex) || []).length;
-                    score += matches;
-                }
-                
-                if (score > 0) {
-                    categoryScores[categoryName] = score;
-                }
-            }
-
-            // Sort categories by score and return top matches
-            const sortedCategories = Object.entries(categoryScores)
-                .sort(([,a], [,b]) => b - a)
-                .slice(0, 5) // Return top 5 matches
-                .map(([categoryName, score]) => ({
-                    name: categoryName,
-                    score: score,
-                    currentMethod: 'Current manual processes and workflows'
-                }));
-
-            console.log('Keyword matching results:', sortedCategories);
-            
-            return sortedCategories.length > 0 ? sortedCategories : [];
-        }
-
-        // Job Analysis Functions
-        async function handleJobAnalysis(e) {
-            e.preventDefault();
-            
-            const industry = document.getElementById('industry').value;
-            const jobTitle = document.getElementById('jobTitle').value.trim();
-            const duties = document.getElementById('jobDuties').value.trim();
-
-            if (!industry || !jobTitle || !duties) {
-                alert('Please fill in all required fields');
-                return;
-            }
-
-            if (!currentUser && usageCount <= 0) {
-                showAuthModal('signup');
-                return;
-            }
-
-            showAnalysisLoading();
-
+        async function handleGoogleSignIn() {
             try {
-                const analysis = await analyzeJobDuties(industry, jobTitle, duties);
-                currentAnalysis = analysis;
-                
-                if (!currentUser) {
-                    usageCount--;
-                    localStorage.setItem('jobs2course_usage', usageCount.toString());
-                    updateUsageDisplay();
+                if (!supabase) {
+                    showAuthMessage('Google sign-in not available in demo mode', 'error');
+                    return;
                 }
 
-                displayResults(analysis, jobTitle, industry);
-                showResultsSection();
-
-                if (analysis.strategies && analysis.strategies.length > 0) {
-                    await loadCommentsForStrategies(analysis.strategies);
-                }
-                
-            } catch (error) {
-                console.error('Analysis error:', error);
-                alert('Analysis failed. Please try again.');
-            } finally {
-                hideAnalysisLoading();
-            }
-        }
-
-        async function analyzeJobDuties(industry, jobTitle, duties) {
-            // Simulate analysis delay
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            // Extract matching tasks using keyword analysis
-            const matchedTasks = extractTasksFromDuties(duties);
-            
-            let strategies = [];
-            
-            // Try to get strategies from job library
-            if (typeof window.jobLibrary !== 'undefined' && matchedTasks.length > 0) {
-                strategies = matchedTasks.map(task => {
-                    const categoryName = task.name;
-                    let strategyData = null;
-                    
-                    // Check if category has industry variants
-                    if (window.jobLibrary[categoryName]) {
-                        const categoryData = window.jobLibrary[categoryName];
-                        
-                        // Check for industry-specific strategy
-                        if (categoryData[industry]) {
-                            strategyData = categoryData[industry];
-                        } else if (categoryData.generic) {
-                            strategyData = categoryData.generic;
-                        } else {
-                            // Use the first available variant as fallback
-                            const firstVariant = Object.keys(categoryData)[0];
-                            strategyData = categoryData[firstVariant];
-                        }
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: 'https://jobs2course.com'
                     }
-                    
-                    if (strategyData) {
-                        return {
-                            task: categoryName,
-                            currentMethod: task.currentMethod,
-                            level1: strategyData,
-                            matchScore: task.score
-                        };
-                    }
-                    
-                    return null;
-                }).filter(strategy => strategy !== null);
-            }
-
-            // If no strategies found, show no match message
-            if (strategies.length === 0) {
-                return {
-                    industry,
-                    jobTitle,
-                    duties,
-                    strategies: [],
-                    noMatches: true
-                };
-            }
-
-            return {
-                industry,
-                jobTitle,
-                duties,
-                strategies
-            };
-        }
-
-        function displayResults(analysis, jobTitle, industry) {
-            document.getElementById('results-title').textContent = `AI Efficiency Analysis for ${jobTitle}`;
-            document.getElementById('results-subtitle').textContent = `Personalized strategies based on your ${industry} workflows`;
-            
-            const container = document.getElementById('strategies-container');
-            
-            if (analysis.noMatches) {
-                container.innerHTML = `
-                    <div class="no-match-message">
-                        <h3>No Specific Matches Found</h3>
-                        <p>We don't have efficiency strategies for your specific tasks yet, but we're working on it.</p>
-                        <div class="submit-link">
-                            <strong>Help us improve:</strong> <a href="https://www.erinjacques.com/jobsimprovements" target="_blank">Submit your suggestions here</a>
-                        </div>
-                    </div>
-                `;
-            } else {
-                container.innerHTML = analysis.strategies.map((strategy, index) => `
-                    <div class="strategy-card">
-                        <div class="strategy-header">
-                            <h3>${strategy.task}</h3>
-                            <p style="color: #6b7280; margin-top: 0.5rem;">Current: ${strategy.currentMethod}</p>
-                        </div>
-                        <div class="strategy-content">
-                            <div class="level-card">
-                                <div class="level-header">
-                                    <span style="font-size: 1.25rem;">⚡</span>
-                                    <h4>Efficiency Strategy</h4>
-                                    <span class="gain-badge">+${strategy.level1.efficiencyGain || '25'}%</span>
-                                </div>
-                                <p style="font-size: 0.875rem; margin-bottom: 0.5rem;">${strategy.level1.description}</p>
-                                <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.75rem;">
-                                    <strong>Tools:</strong> ${strategy.level1.tools || 'AI-powered automation tools'}<br>
-                                    <strong>Setup:</strong> ${strategy.level1.setupTime || '30 minutes'} | 
-                                    <strong>Weekly Savings:</strong> ${strategy.level1.weeklySavings || '3-5 hours'}
-                                </div>
-                                <button class="quick-start-btn" onclick="toggleQuickStart(this)">
-                                    Quick Start Guide ▼
-                                </button>
-                                <div class="quick-start-content">
-                                    ${formatQuickStart(strategy.level1.quickGuide)}
-                                </div>
-                                <div class="submit-link">
-                                    <strong>Know an advanced strategy for this?</strong> <a href="https://www.erinjacques.com/jobsimprovements" target="_blank">Submit it here</a>
-                                </div>
-                            </div>
-                            
-                            <!-- Comments Section -->
-                            <div class="comments-section" id="comments-${index}">
-                                <div class="comments-header">
-                                    💬 What others are saying about similar suggestions:
-                                </div>
-                                <div class="existing-comments" id="existing-comments-${index}">
-                                    <div style="text-align: center; color: #6b7280; font-size: 0.875rem; padding: 1rem;">
-                                        Loading comments...
-                                    </div>
-                                </div>
-                                <div class="add-comment-form">
-                                    <h4>Share your experience:</h4>
-                                    <div id="comment-form-${index}">
-                                        <textarea 
-                                            id="comment-text-${index}" 
-                                            placeholder="Did these suggestions work for you? Any additional tips to share?"
-                                            maxlength="1000"
-                                        ></textarea>
-                                        <button 
-                                            class="submit-comment-btn" 
-                                            onclick="submitComment(${index}, '${strategy.task}', '${analysis.industry}', '${analysis.jobTitle}')"
-                                        >
-                                            Share Feedback
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            const totalStrategies = analysis.strategies.length;
-            if (totalStrategies > 0) {
-                document.getElementById('monetization-title').textContent = 
-                    `You've unlocked ${totalStrategies} efficiency improvements!`;
-            }
-        }
-
-        // Comments Functions
-        async function loadCommentsForStrategies(strategies) {
-            for (let i = 0; i < strategies.length; i++) {
-                const strategy = strategies[i];
-                await loadCommentsForStrategy(i, strategy.task);
-            }
-        }
-
-        async function loadCommentsForStrategy(index, category) {
-            const commentsContainer = document.getElementById(`existing-comments-${index}`);
-            
-            if (!supabase) {
-                commentsContainer.innerHTML = getDemoComments(category);
-                return;
-            }
-
-            try {
-                const { data: comments, error } = await supabase
-                    .from('comments')
-                    .select('*')
-                    .eq('job_category', category)
-                    .eq('approved', true)
-                    .order('created_at', { ascending: false })
-                    .limit(5);
+                });
 
                 if (error) throw error;
-
-                if (comments.length === 0) {
-                    commentsContainer.innerHTML = `
-                        <div style="text-align: center; color: #6b7280; font-size: 0.875rem; padding: 1rem;">
-                            No comments yet. Be the first to share your experience!
-                        </div>
-                    `;
-                } else {
-                    commentsContainer.innerHTML = comments.map(comment => `
-                        <div class="comment-item">
-                            <div class="comment-header">
-                                <span class="comment-author">${maskEmail(comment.user_email)}</span>
-                                <span class="comment-date">${formatDate(comment.created_at)}</span>
-                            </div>
-                            <div class="comment-text">${escapeHtml(comment.comment_text)}</div>
-                        </div>
-                    `).join('');
-                }
-
-            } catch (error) {
-                console.error('Error loading comments:', error);
-                commentsContainer.innerHTML = `
-                    <div style="text-align: center; color: #ef4444; font-size: 0.875rem; padding: 1rem;">
-                        Unable to load comments
-                    </div>
-                `;
-            }
-        }
-
-        function getDemoComments(category) {
-            const demoComments = {
-                'Documentation & Report Writing': [
-                    {
-                        user_email: 'sarah.m@example.com',
-                        comment_text: 'The template approach saved me 2 hours per week! I created standard formats for all my reports.',
-                        created_at: '2024-01-15T10:30:00Z'
-                    }
-                ],
-                'Communication & Email Management': [
-                    {
-                        user_email: 'anna.k@work.com',
-                        comment_text: 'Email templates are a game changer! I cut my response time in half.',
-                        created_at: '2024-01-12T09:15:00Z'
-                    }
-                ]
-            };
-
-            const comments = demoComments[category] || [];
-            
-            if (comments.length === 0) {
-                return `
-                    <div style="text-align: center; color: #6b7280; font-size: 0.875rem; padding: 1rem;">
-                        No comments yet. Be the first to share your experience!
-                    </div>
-                `;
-            }
-
-            return comments.map(comment => `
-                <div class="comment-item">
-                    <div class="comment-header">
-                        <span class="comment-author">${maskEmail(comment.user_email)}</span>
-                        <span class="comment-date">${formatDate(comment.created_at)}</span>
-                    </div>
-                    <div class="comment-text">${escapeHtml(comment.comment_text)}</div>
-                </div>
-            `).join('');
-        }
-
-        async function submitComment(index, category, industry, jobTitle) {
-            const commentText = document.getElementById(`comment-text-${index}`).value.trim();
-            
-            if (!commentText) {
-                alert('Please enter a comment before submitting.');
-                return;
-            }
-
-            if (!currentUser) {
-                localStorage.setItem('pendingComment', JSON.stringify({
-                    index, category, industry, jobTitle, commentText
-                }));
-                showAuthModal('signup');
-                return;
-            }
-
-            const submitBtn = document.querySelector(`#comment-form-${index} .submit-comment-btn`);
-            const originalText = submitBtn.textContent;
-            
-            try {
-                submitBtn.textContent = 'Submitting...';
-                submitBtn.disabled = true;
-
-                if (supabase) {
-                    const { error } = await supabase
-                        .from('comments')
-                        .insert([{
-                            user_id: currentUser.id,
-                            user_email: currentUser.email,
-                            user_name: currentUser.user_metadata?.full_name || currentUser.email.split('@')[0],
-                            job_category: category,
-                            job_title: jobTitle,
-                            industry: industry,
-                            comment_text: commentText,
-                            approved: false
-                        }]);
-
-                    if (error) throw error;
-                }
-
-                const formContainer = document.getElementById(`comment-form-${index}`);
-                formContainer.innerHTML = `
-                    <div class="comment-success">
-                        ✅ Thank you for sharing! Your comment is being reviewed and will appear soon.
-                    </div>
-                `;
-
-                await loadCategoryStats();
-
-            } catch (error) {
-                console.error('Error submitting comment:', error);
-                alert('Failed to submit comment. Please try again.');
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
-            }
-        }
-
-        // Utility functions
-        function maskEmail(email) {
-            if (!email || typeof email !== 'string') return 'Anonymous';
-            const [username, domain] = email.split('@');
-            if (!username || !domain) return 'Anonymous';
-            
-            if (username.length <= 2) {
-                return username[0] + '*@' + domain;
-            } else {
-                return username[0] + '*'.repeat(Math.min(3, username.length - 1)) + '@' + domain;
-            }
-        }
-
-        function formatDate(dateString) {
-            try {
-                const date = new Date(dateString);
-                const now = new Date();
-                const diffMs = now - date;
-                const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
                 
-                if (diffDays === 0) return 'Today';
-                if (diffDays === 1) return 'Yesterday';
-                if (diffDays < 7) return `${diffDays} days ago`;
-                if (diffDays < 30) {
-                    const weeks = Math.floor(diffDays / 7);
-                    return `${weeks} week${weeks > 1 ? 's' : ''} ago`;
-                }
-                return date.toLocaleDateString();
             } catch (error) {
-                return 'Recently';
+                console.error('Google sign-in error:', error);
+                showAuthMessage('Google sign-in failed. Please try again.', 'error');
             }
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function formatQuickStart(text) {
-            if (!text) return 'Detailed implementation guide will be provided based on your specific tools and workflow.';
-            
-            return text.split('\n').map(line => {
-                if (line.match(/^\d+\./)) {
-                    return `<strong>${line}</strong>`;
-                }
-                return line;
-            }).join('<br>');
-        }
-
-        function toggleQuickStart(button) {
-            const content = button.nextElementSibling;
-            const isVisible = content.style.display !== 'none';
-            
-            if (isVisible) {
-                content.style.display = 'none';
-                button.innerHTML = 'Quick Start Guide ▼';
-            } else {
-                content.style.display = 'block';
-                button.innerHTML = 'Quick Start Guide ▲';
-            }
-        }
-
-        // UI Helper Functions
-        function showAnalysisLoading() {
-            analyzeBtn.innerHTML = '<div class="spinner"></div> <span>Analyzing your job duties...</span>';
-            analyzeBtn.disabled = true;
-        }
-
-        function hideAnalysisLoading() {
-            analyzeBtn.innerHTML = '<span>Analyze My Job & Get Efficiency Strategies</span>';
-            analyzeBtn.disabled = false;
-        }
-
-        function showFormSection() {
-            resultsSection.classList.add('hidden');
-            formSection.classList.remove('hidden');
-            window.scrollTo(0, 0);
-        }
-
-        function showResultsSection() {
-            formSection.classList.add('hidden');
-            resultsSection.classList.remove('hidden');
-            window.scrollTo(0, 0);
         }
 
         function showAuthMessage(message, type) {
@@ -1883,30 +1308,7 @@
             return errorMap[errorMessage] || 'Authentication failed. Please try again.';
         }
 
-        // Google sign-in function - Using the working implementation from your live version
-        async function handleGoogleSignIn() {
-            try {
-                if (!supabase) {
-                    showAuthMessage('Google sign-in not available in demo mode', 'error');
-                    return;
-                }
-
-                const { data, error } = await supabase.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: {
-                        redirectTo: 'https://ejacques1.github.io/Jobs2Course'
-                    }
-                });
-
-                if (error) throw error;
-                
-            } catch (error) {
-                console.error('Google sign-in error:', error);
-                showAuthMessage('Google sign-in failed. Please try again.', 'error');
-            }
-        }
-
-        // Make functions globally available for onclick handlers
+        // Make functions globally available
         window.showAuthModal = showAuthModal;
         window.hideAuthModal = hideAuthModal;
         window.toggleAuthMode = toggleAuthMode;
