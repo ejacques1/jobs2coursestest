@@ -912,62 +912,26 @@ Analyze their specific workflow and provide 2-4 strategies that address their ac
         async function enhanceWithAI(userData) {
             const { industry, jobTitle, duties } = userData;
             
-            if (!supabase) {
-                throw new Error('AI analysis requires authentication');
-            }
-            
-            const { data, error } = await supabase.functions.invoke('enhance-job-analysis', {
-                body: { industry, jobTitle, duties }
+            const res = await fetch("https://hrgxcgdpyoeurxbpcatn.supabase.co/functions/v1/enhance-job-analysis", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${APP_CONFIG.supabase.anonKey}`
+                },
+                body: JSON.stringify({ industry, jobTitle, duties }),
             });
-            
-            if (error) throw error;
-            
-            try {
-                console.log('Raw AI API response:', data);
-                
-                if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-                    throw new Error('Invalid AI response structure');
-                }
-                
-                const responseContent = data.choices[0].message.content;
-                console.log('AI response content:', responseContent);
-                console.log('Response content type:', typeof responseContent);
-                
-                if (!responseContent) {
-                    throw new Error('Empty AI response');
-                }
-                
-                // Handle different response types
-                let aiResponse;
-                
-                if (typeof responseContent === 'object') {
-                    // If it's already an object, use it directly
-                    aiResponse = responseContent;
-                } else if (typeof responseContent === 'string') {
-                    // If it's a string, try to parse JSON
-                    try {
-                        aiResponse = JSON.parse(responseContent);
-                    } catch (jsonError) {
-                        // Try to extract JSON from mixed text
-                        let jsonMatch = responseContent.match(/\{[\s\S]*\}/);
-                        if (jsonMatch) {
-                            aiResponse = JSON.parse(jsonMatch[0]);
-                        } else {
-                            throw jsonError;
-                        }
-                    }
-                } else {
-                    throw new Error('Unexpected response content type');
-                }
-                
-                console.log('Parsed AI response:', aiResponse);
-                return aiResponse;
-                
-            } catch (parseError) {
-                console.error('Failed to parse AI response:', parseError);
-                console.error('Raw AI response data:', data);
-                throw new Error('AI response format error');
+
+            if (!res.ok) {
+                throw new Error(`Edge Function returned ${res.status}`);
             }
+
+            const data = await res.json();
+            
+            if (!data?.strategies || !Array.isArray(data.strategies)) {
+                throw new Error("No strategies in response");
+            }
+
+            return data; // Returns clean { strategies: [...] } format
         }
 
         function displayResults(analysis, jobTitle, industry) {
